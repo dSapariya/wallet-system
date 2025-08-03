@@ -2,7 +2,7 @@
 export const config = {
   // API Configuration
   api: {
-    baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002',
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'https://wallet-service-7ceb.onrender.com/',
   },
   
   // App Configuration

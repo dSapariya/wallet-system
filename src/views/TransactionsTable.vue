@@ -262,7 +262,7 @@ const exportCSV = async () => {
     const response = await apiService.getAllTransactions(walletId)
 
     if (response.success && response.data) {
-      const csvContent = generateCSV(response.data)
+      const csvContent = generateCSV(response.data.transactions)
       downloadCSV(csvContent, `transactions-${walletId}.csv`)
     } else {
       error.value = response.error || 'Failed to export CSV'

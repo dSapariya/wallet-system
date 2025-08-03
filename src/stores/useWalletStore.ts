@@ -44,13 +44,15 @@ export const useWalletStore = defineStore('wallet', () => {
       // Save to localStorage and store
       localStorage.setItem(storage.walletId, response.data.id)
       wallet.value = response.data
+      loading.value = false
       return true
     } else {
       error.value = response.error || 'Failed to setup wallet'
+      loading.value = false
       return false
     }
     
-    loading.value = false
+   
   }
 
   // Update wallet balance after transaction
