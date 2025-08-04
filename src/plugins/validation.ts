@@ -10,7 +10,7 @@ import {
   confirmed
 } from '@vee-validate/rules';
 
-const decimal = (value: any): boolean | string => {
+export const decimal = (value: any): boolean | string => {
   if (value === undefined || value === null || value === '') return true;
   const stringValue = String(value);
   if (!/^-?\d*\.?\d*$/.test(stringValue)) {
@@ -22,19 +22,40 @@ const decimal = (value: any): boolean | string => {
   return true;
 };
 
-const amountValidation = (value: any): boolean | string => {
+export const amountValidation = (value: any): boolean | string => {
   if (value === undefined || value === null || value === '') return true;
+
   const stringValue = String(value);
-  if (!/^\d*\.?\d*$/.test(stringValue)) {
+
+  // Strict regex to check if the entire string is a valid number format.
+  // It requires at least one digit and anchors to start and end.
+  if (!/^-?\d+(\.\d+)?$/.test(stringValue)) {
     return 'You can add only numbers';
   }
-  if (!/^\d+(\.\d{1,4})?$/.test(stringValue)) {
+
+  const num = parseFloat(stringValue);
+
+  // This check for isNaN should ideally be caught by the regex above, but keeping as a safeguard
+  if (isNaN(num)) {
+    return 'You can add only numbers';
+  }
+
+  if (num < 0) {
+    return 'Use only positive numbers';
+  }
+
+  // Check for more than 4 decimal places explicitly
+  const parts = stringValue.split('.');
+  if (parts.length === 2 && parts[1].length > 4) {
     return 'Must be a valid decimal (up to 4 digits)';
   }
-  const num = parseFloat(value);
-  if (num < 0) return 'Use only positive numbers';
-  if (num < 0.01) return 'Amount must be at least $0.01';
-  if (num > 999999.99) return 'Amount cannot exceed $999,999.99';
+
+  if (num < 0.01) {
+    return 'Amount must be at least $0.01';
+  }
+  if (num > 999999.99) {
+    return 'Amount cannot exceed $999,999.99';
+  }
   return true;
 };
 

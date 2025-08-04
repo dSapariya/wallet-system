@@ -1,15 +1,15 @@
-import axios, { AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios'
 import { api } from '../config'
 import { showSuccessToast, showErrorToast } from '../plugins/notification'
 
-const apiClient = axios.create({
+const realApiClient = axios.create({
   baseURL: api.baseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-apiClient.interceptors.request.use(
+realApiClient.interceptors.request.use(
   (config) => {
     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`)
     return config
@@ -20,7 +20,7 @@ apiClient.interceptors.request.use(
   }
 )
 
-apiClient.interceptors.response.use(
+realApiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     console.log(`API Response: ${response.status} ${response.config.url}`)
     return response
@@ -60,11 +60,12 @@ export interface ApiResponse<T> {
   error?: string
 }
 
-class ApiService {
+export class ApiService {
+  constructor(private axiosInstance: AxiosInstance = realApiClient) {}
 
   async setupWallet(name: string, balance: number = 0): Promise<ApiResponse<Wallet>> {
     try {
-      const response = await apiClient.post('/setup', { name, balance })
+      const response = await this.axiosInstance.post('/setup', { name, balance })
       showSuccessToast('Wallet setup successfully!')
       return {
         success: true,
@@ -82,7 +83,7 @@ class ApiService {
 
   async getWallet(walletId: string): Promise<ApiResponse<Wallet>> {
     try {
-      const response = await apiClient.get(`/wallet/${walletId}`)
+      const response = await this.axiosInstance.get(`/wallet/${walletId}`)
       return {
         success: true,
         data: response.data
@@ -99,7 +100,7 @@ class ApiService {
 
   async updateWalletBalance(walletId: string, amount: number, description: string = 'Transaction'): Promise<ApiResponse<{ balance: number }>> {
     try {
-      const response = await apiClient.post(`/transact/${walletId}`, {
+      const response = await this.axiosInstance.post(`/transact/${walletId}`, {
         amount,
         description
       })
@@ -126,7 +127,7 @@ class ApiService {
     order: 'asc' | 'desc' = 'asc'
   ): Promise<ApiResponse<TransactionListResponse>> {
     try {
-      const response = await apiClient.get(`/transactions`, {
+      const response = await this.axiosInstance.get(`/transactions`, {
         params: {
           walletId,
           skip,
@@ -154,7 +155,7 @@ class ApiService {
 
   async getAllTransactions(walletId: string): Promise<ApiResponse<TransactionListResponse>> {
     try {
-      const response = await apiClient.get(`/transactions`, {
+      const response = await this.axiosInstance.get(`/transactions`, {
         params: { walletId }
       })
       return {
