@@ -43,13 +43,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-
-interface Wallet {
-  id: string
-  name: string
-  balance: number
-  date: string
-}
+import { type Wallet } from '../services/api'
 
 const props = defineProps<{
   wallet: Wallet

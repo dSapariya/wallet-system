@@ -101,7 +101,6 @@ const handleSubmit = async (values: any, { resetForm }: any) => {
         walletName: '',
         balance: ''
       }
-      loading.value = false
       emit('walletCreated')
      
     }

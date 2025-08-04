@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
 import { api } from '../config'
+import { showSuccessToast, showErrorToast } from '../plugins/notification'
 
 const apiClient = axios.create({
   baseURL: api.baseUrl,
@@ -64,14 +65,17 @@ class ApiService {
   async setupWallet(name: string, balance: number = 0): Promise<ApiResponse<Wallet>> {
     try {
       const response = await apiClient.post('/setup', { name, balance })
+      showSuccessToast('Wallet setup successfully!')
       return {
         success: true,
         data: response.data
       }
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to setup wallet'
+      showErrorToast(errorMessage)
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to setup wallet'
+        error: errorMessage
       }
     }
   }
@@ -84,9 +88,11 @@ class ApiService {
         data: response.data
       }
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to fetch wallet'
+      showErrorToast(errorMessage)
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch wallet'
+        error: errorMessage
       }
     }
   }
@@ -97,14 +103,17 @@ class ApiService {
         amount,
         description
       })
+      showSuccessToast('Balance updated successfully!')
       return {
         success: true,
         data: response.data
       }
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to update balance'
+      showErrorToast(errorMessage)
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to update balance'
+        error: errorMessage
       }
     }
   }
@@ -134,14 +143,16 @@ class ApiService {
         }
       }
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to fetch transactions'
+      showErrorToast(errorMessage)
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch transactions'
+        error: errorMessage
       }
     }
   }
 
-  async getAllTransactions(walletId: string): Promise<ApiResponse<TransactionListResponse[]>> {
+  async getAllTransactions(walletId: string): Promise<ApiResponse<TransactionListResponse>> {
     try {
       const response = await apiClient.get(`/transactions`, {
         params: { walletId }
@@ -151,9 +162,11 @@ class ApiService {
         data: response.data
       }
     } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to fetch all transactions'
+      showErrorToast(errorMessage)
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch all transactions'
+        error: errorMessage
       }
     }
   }

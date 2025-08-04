@@ -22,14 +22,6 @@ const decimal = (value: any): boolean | string => {
   return true;
 };
 
-const positiveNumber = (value: any): boolean | string => {
-  if (value === undefined || value === null || value === '') return true;
-  const num = parseFloat(value);
-  if (isNaN(num)) return 'You can add only numbers';
-  if (num < 0) return 'Use only positive numbers';
-  return true;
-};
-
 const amountValidation = (value: any): boolean | string => {
   if (value === undefined || value === null || value === '') return true;
   const stringValue = String(value);
@@ -52,7 +44,6 @@ defineRule('max', max);
 defineRule('min_value', min_value);
 defineRule('max_value', max_value);
 defineRule('decimal', decimal);
-defineRule('positiveNumber', positiveNumber);
 defineRule('amountValidation', amountValidation);
 defineRule('alpha_spaces', alpha_spaces);
 defineRule('email', email);
@@ -82,7 +73,6 @@ configure({
       min_value: `${fieldName} must be at least ${params?.min}`,
       max_value: `${fieldName} must be no more than ${params?.max}`,
       decimal: `${fieldName} must be a valid decimal (up to 4 digits)`,
-      positiveNumber: `${fieldName} must be a positive number`,
       amountValidation: `${fieldName} is invalid`,
       alpha_spaces: `${fieldName} may only contain alphabetic characters and spaces`,
       email: `${fieldName} must be a valid email`,
