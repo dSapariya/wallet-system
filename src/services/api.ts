@@ -38,8 +38,13 @@ export interface Wallet {
 }
 
 export interface Transaction {
-  total: number;
-  transactions: Transaction[];
+  id: string;
+  walletId: string;
+  amount: number;
+  balance: number;
+  description: string;
+  date: string; 
+  type: 'CREDIT' | 'DEBIT';
 }
 
 export interface TransactionListResponse {
@@ -136,7 +141,7 @@ class ApiService {
     }
   }
 
-  async getAllTransactions(walletId: string): Promise<ApiResponse<Transaction[]>> {
+  async getAllTransactions(walletId: string): Promise<ApiResponse<TransactionListResponse[]>> {
     try {
       const response = await apiClient.get(`/transactions`, {
         params: { walletId }

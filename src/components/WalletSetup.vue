@@ -5,7 +5,7 @@
       <p class="text-gray-600">Set up your digital wallet to start managing transactions</p>
     </div>
 
-    <Form @submit="handleSubmit" v-slot="{ errors, isSubmitting, resetForm }" class="space-y-6">
+    <Form @submit="handleSubmit" v-slot="{ errors, isSubmitting }" class="space-y-6">
       <div>
         <label for="walletName" class="block text-sm font-medium text-gray-700 mb-2">
           Wallet User Name <span class="text-red-500">*</span>
