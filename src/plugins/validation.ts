@@ -6,8 +6,6 @@ import {
   min_value,
   max_value,
   alpha_spaces,
-  email,
-  confirmed
 } from '@vee-validate/rules';
 
 export const decimal = (value: any): boolean | string => {
@@ -67,8 +65,6 @@ defineRule('max_value', max_value);
 defineRule('decimal', decimal);
 defineRule('amountValidation', amountValidation);
 defineRule('alpha_spaces', alpha_spaces);
-defineRule('email', email);
-defineRule('confirmed', confirmed);
 
 configure({
   validateOnInput: true,
@@ -82,9 +78,6 @@ configure({
       balance: 'Balance',
       amount: 'Amount',
       description: 'Description',
-      email: 'Email',
-      password: 'Password',
-      confirmPassword: 'Confirm password'
     };
     const fieldName = fieldNames[field] || field;
     const messages: Record<string, string> = {
@@ -94,10 +87,8 @@ configure({
       min_value: `${fieldName} must be at least ${params?.min}`,
       max_value: `${fieldName} must be no more than ${params?.max}`,
       decimal: `${fieldName} must be a valid decimal (up to 4 digits)`,
-      amountValidation: `${fieldName} is invalid`,
+      amountValidation: `Balance should be positive numbers`, // Default message for amountValidation
       alpha_spaces: `${fieldName} may only contain alphabetic characters and spaces`,
-      email: `${fieldName} must be a valid email`,
-      confirmed: `${fieldName} confirmation does not match`,
     };
     return messages[rule] || `${fieldName} is required field`;
   }
@@ -105,28 +96,20 @@ configure({
 
 export const fieldRules = {
   walletName: 'required|min:2|max:50|alpha_spaces',
-  balance: 'decimal|min_value:0|max_value:999999.99',
+  balance: 'amountValidation:isInitialBalance', // Using amountValidation with a flag
   amount: 'required|amountValidation',
   description: 'required|min:3|max:100',
-  email: 'required|email',
-  password: 'required|min:8|max:50',
-  confirmPassword: 'required|confirmed:@password'
 };
 
 export const validationSchemas = {
   walletSetup: {
     walletName: 'required|min:2|max:50|alpha_spaces',
-    balance: 'decimal|min_value:0|max_value:999999.99'
+    balance: 'amountValidation:isInitialBalance'
   },
   transaction: {
     amount: 'required|amountValidation',
     description: 'required|min:3|max:100'
   },
-  userRegistration: {
-    email: 'required|email',
-    password: 'required|min:8|max:50',
-    confirmPassword: 'required|confirmed:@password'
-  }
 };
 
 export const getFieldRule = (fieldName: keyof typeof fieldRules): string => {
