@@ -153,10 +153,10 @@ export class ApiService {
     }
   }
 
-  async getAllTransactions(walletId: string): Promise<ApiResponse<TransactionListResponse>> {
+  async getAllTransactions(walletId: string,exportAll: boolean): Promise<ApiResponse<TransactionListResponse>> {
     try {
       const response = await this.axiosInstance.get(`/transactions`, {
-        params: { walletId }
+        params: { walletId, exportAll }
       })
       return {
         success: true,

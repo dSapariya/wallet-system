@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiService, type Wallet, type ApiResponse } from '../services/api'
 import { storage } from '../config'
+import { showErrorToast } from '../plugins/notification' 
 
 export const useWalletStore = defineStore('wallet', () => {
   const wallet = ref<Wallet | null>(null)
@@ -17,12 +18,31 @@ export const useWalletStore = defineStore('wallet', () => {
   const fetchWallet = async (walletId: string): Promise<void> => {
     loading.value = true
     
-    const response: ApiResponse<Wallet> = await apiService.getWallet(walletId)
-    
-    if (response.success && response.data) {
-      wallet.value = response.data
-    } 
-    loading.value = false
+    try { 
+      const response: ApiResponse<Wallet> = await apiService.getWallet(walletId)
+      
+      if (response.success && response.data) {
+        wallet.value = response.data
+      } else {
+        // If wallet data fetch fails, clear walletId and reload
+        showErrorToast('Failed to load wallet data. Please set up your wallet again.')
+        localStorage.removeItem(storage.walletId)
+        wallet.value = null 
+        setTimeout(() => { 
+          window.location.reload()
+        }, 3000)
+      }
+    } catch (error) {
+      console.error('Error fetching wallet:', error)
+      showErrorToast('An unexpected error occurred while fetching wallet data. Please set up your wallet again.')
+      localStorage.removeItem(storage.walletId)
+      wallet.value = null
+      setTimeout(() => { 
+        window.location.reload()
+      }, 3000)
+    } finally {
+      loading.value = false
+    }
   }
 
   const setupWallet = async (name: string, balance?: string): Promise<boolean> => {
@@ -64,7 +84,6 @@ export const useWalletStore = defineStore('wallet', () => {
   return {
     wallet,
     loading,
-    // error, // Removed
     initializeWallet,
     fetchWallet,
     setupWallet,

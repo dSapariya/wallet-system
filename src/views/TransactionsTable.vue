@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-center justify-between mb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Transaction History</h1>
-          <p class="text-gray-600">View and manage your wallet transactions</p>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Transaction History</h1>
+          <p class="text-gray-600 text-sm sm:text-base">View and manage your wallet transactions</p>
         </div>
-        <div class="flex space-x-4">
-          <router-link to="/" class="btn-secondary flex items-center space-x-2">
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-0">
+          <router-link to="/" class="btn-secondary flex items-center justify-center space-x-2 w-full sm:w-auto">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
@@ -15,7 +15,7 @@
           </router-link>
           <button 
             @click="exportCSV" 
-            class="btn-primary flex items-center space-x-2"
+            class="btn-primary flex items-center justify-center space-x-2 w-full sm:w-auto"
             :disabled="loading || transactions.length === 0"
           >
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,13 +33,14 @@
       <!-- Transactions Table -->
       <div v-else-if="transactions.length > 0" class="card">
         <!-- Table Controls -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center space-x-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
+          <!-- Combined Group: Sort by, Order, and Items per page -->
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2"> <!-- flex-wrap to allow wrapping on small screens -->
             <label class="text-sm font-medium text-gray-700">Sort by:</label>
             <select 
               v-model="sortBy" 
               @change="fetchTransactions"
-              class="input-field max-w-xs"
+              class="input-field w-full sm:w-auto" 
             >
               <option value="date">Date</option>
               <option value="amount">Amount</option>
@@ -49,7 +50,7 @@
             <select 
               v-model="order" 
               @change="fetchTransactions"
-              class="input-field max-w-xs"
+              class="input-field w-full sm:w-auto" 
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
@@ -59,7 +60,7 @@
             <select 
               v-model="pagination.limit" 
               @change="onLimitChange"
-              class="input-field max-w-xs"
+              class="input-field w-full sm:w-auto"
             >
               <option value="5">5</option>
               <option value="10">10</option>
@@ -67,7 +68,9 @@
               <option value="50">50</option>
             </select>
           </div>
-          <div class="text-sm text-gray-600">
+
+          <!-- Right Group: Showing X of Y -->
+          <div class="text-sm text-gray-600 text-center sm:text-right w-full sm:w-auto mt-2 sm:mt-0"> <!-- Ensure it moves to right on larger screens -->
             Showing {{ pagination.skip + 1 }}-{{ Math.min(pagination.skip + pagination.limit, totalTransactions) }} of {{ totalTransactions }} transactions
           </div>
         </div>
@@ -77,42 +80,42 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Amount
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Type
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Description
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Balance
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="transaction in transactions" :key="transaction.id" class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-3 py-2 whitespace-nowrap">
                   <span :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'" class="font-medium">
                     {{ transaction.amount >= 0 ? '+' : '' }}${{ Math.abs(transaction.amount).toFixed(2) }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-3 py-2 whitespace-nowrap">
                   <span :class="transaction.amount >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" class="px-2 py-1 text-xs font-medium rounded-full">
                     {{ transaction.amount >= 0 ? 'Credit' : 'Debit' }}
                   </span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-3 py-2">
                   <div class="text-sm text-gray-900">{{ transaction.description }}</div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
                   ${{ transaction.balance.toFixed(2) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                   {{ formatDate(transaction.date) }}
                 </td>
               </tr>
@@ -121,7 +124,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex items-center justify-between mt-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between mt-6 space-y-4 sm:space-y-0">
           <div class="flex items-center space-x-2">
             <button 
               @click="previousPage" 
@@ -163,19 +166,19 @@
             </button>
           </div>
           
-          <div class="text-sm text-gray-600">
+          <div class="text-sm text-gray-600 text-center sm:text-right">
             Page {{ getCurrentPage() }} of {{ getTotalPages() }} 
           </div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-else class="card text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-else class="card text-center py-12 px-4 sm:px-6">
+        <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions</h3>
-        <p class="mt-1 text-sm text-gray-500">Get started by creating your first transaction.</p>
+        <h3 class="mt-2 text-base sm:text-lg font-medium text-gray-900">No transactions</h3>
+        <p class="mt-1 text-sm sm:text-base text-gray-500">Get started by creating your first transaction.</p>
         <div class="mt-6">
           <router-link to="/" class="btn-primary">
             Go to Wallet
@@ -197,7 +200,7 @@ const loading = ref(false)
 const transactions = ref<Transaction[]>([])
 const totalTransactions = ref(0)
 const sortBy = ref('date')
-const order = ref<'asc' | 'desc'>('asc')
+const order = ref<'asc' | 'desc'>('desc')
 
 const pagination = ref({
   skip: 0,
@@ -237,7 +240,7 @@ const exportCSV = async () => {
   if (!walletId) return
 
   try {
-    const response = await apiService.getAllTransactions(walletId)
+    const response = await apiService.getAllTransactions(walletId,true)
 
     if (response.success && response.data) {
       const csvContent = generateCSV(response.data.transactions)
