@@ -20,20 +20,17 @@ export const decimal = (value: any): boolean | string => {
   return true;
 };
 
-export const amountValidation = (value: any): boolean | string => {
+export const amountValidation = (value: any, context?: { isInitialBalance?: boolean }): boolean | string => {
   if (value === undefined || value === null || value === '') return true;
 
   const stringValue = String(value);
 
-  // Strict regex to check if the entire string is a valid number format.
-  // It requires at least one digit and anchors to start and end.
   if (!/^-?\d+(\.\d+)?$/.test(stringValue)) {
     return 'You can add only numbers';
   }
 
   const num = parseFloat(stringValue);
 
-  // This check for isNaN should ideally be caught by the regex above, but keeping as a safeguard
   if (isNaN(num)) {
     return 'You can add only numbers';
   }
@@ -42,14 +39,13 @@ export const amountValidation = (value: any): boolean | string => {
     return 'Use only positive numbers';
   }
 
-  // Check for more than 4 decimal places explicitly
   const parts = stringValue.split('.');
   if (parts.length === 2 && parts[1].length > 4) {
     return 'Must be a valid decimal (up to 4 digits)';
   }
 
-  if (num < 0.01) {
-    return 'Amount must be at least $0.01';
+  if (!context?.isInitialBalance && num < 0.0001) { 
+    return 'Amount must be at least $0.0001'; 
   }
   if (num > 999999.99) {
     return 'Amount cannot exceed $999,999.99';
@@ -87,7 +83,7 @@ configure({
       min_value: `${fieldName} must be at least ${params?.min}`,
       max_value: `${fieldName} must be no more than ${params?.max}`,
       decimal: `${fieldName} must be a valid decimal (up to 4 digits)`,
-      amountValidation: `Balance should be positive numbers`, // Default message for amountValidation
+      amountValidation: `Balance should be positive numbers`,
       alpha_spaces: `${fieldName} may only contain alphabetic characters and spaces`,
     };
     return messages[rule] || `${fieldName} is required field`;
@@ -96,7 +92,7 @@ configure({
 
 export const fieldRules = {
   walletName: 'required|min:2|max:50|alpha_spaces',
-  balance: 'amountValidation:isInitialBalance', // Using amountValidation with a flag
+  balance: 'amountValidation:isInitialBalance', 
   amount: 'required|amountValidation',
   description: 'required|min:3|max:100',
 };
