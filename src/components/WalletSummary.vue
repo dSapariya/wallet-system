@@ -54,6 +54,6 @@ const formatDate = (dateString: string): string => {
 }
 
 const formatCurrency = (amount: number): string => {
-  return amount.toFixed(2)
+  return amount.toFixed(4)
 }
 </script> 

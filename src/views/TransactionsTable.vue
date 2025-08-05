@@ -80,7 +80,7 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  text-right">
                   Amount
                 </th>
                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -89,7 +89,7 @@
                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Description
                 </th>
-                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  text-right">
                   Balance
                 </th>
                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -99,9 +99,9 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="transaction in transactions" :key="transaction.id" class="hover:bg-gray-50">
-                <td class="px-3 py-2 whitespace-nowrap">
+                <td class="px-3 py-2 whitespace-nowrap text-right">
                   <span :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'" class="font-medium">
-                    {{ transaction.amount >= 0 ? '+' : '' }}${{ Math.abs(transaction.amount).toFixed(2) }}
+                    {{ transaction.amount >= 0 ? '' : '' }}${{ Math.abs(transaction.amount).toFixed(4) }}
                   </span>
                 </td>
                 <td class="px-3 py-2 whitespace-nowrap">
@@ -112,8 +112,8 @@
                 <td class="px-3 py-2">
                   <div class="text-sm text-gray-900">{{ transaction.description }}</div>
                 </td>
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                  ${{ transaction.balance.toFixed(2) }}
+                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 text-right">
+                  ${{ transaction.balance.toFixed(4) }}
                 </td>
                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                   {{ formatDate(transaction.date) }}
@@ -254,10 +254,10 @@ const exportCSV = async () => {
 const generateCSV = (data: Transaction[]): string => {
   const headers = ['Amount', 'Type', 'Description', 'Balance', 'Date']
   const rows = data.map(t => [
-    t.amount.toFixed(2),
+    t.amount.toFixed(4),
     t.amount >= 0 ? 'Credit' : 'Debit',
     t.description,
-    t.balance.toFixed(2),
+    t.balance.toFixed(4),
     dayjs(t.date).format('YYYY-MM-DD HH:mm:ss')
   ])
   
