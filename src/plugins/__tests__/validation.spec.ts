@@ -30,7 +30,7 @@ describe('Validation Rules', () => {
   describe('amountValidation', () => {
     it('should return true for valid amount numbers', () => {
       expect(amountValidation(10)).toBe(true)
-      expect(amountValidation(0.01)).toBe(true)
+      expect(amountValidation(0.0001)).toBe(true)
       expect(amountValidation(999999.99)).toBe(true)
       expect(amountValidation('123.45')).toBe(true)
       expect(amountValidation('')).toBe(true)
@@ -46,9 +46,16 @@ describe('Validation Rules', () => {
       expect(amountValidation(-10)).toBe('Use only positive numbers')
     })
 
-    it('should return an error message for amount less than 0.01', () => {
-      expect(amountValidation(0)).toBe('Amount must be at least $0.01')
-      expect(amountValidation(0.005)).toBe('Amount must be at least $0.01')
+    it('should return an error message for amount less than 0.0001', () => {
+      expect(amountValidation(0)).toBe('Amount must be at least $0.0001')
+      expect(amountValidation(0.000001)).toBe('Amount must be at least $0.0001')
+    })
+
+    it('should return true for valid amounts including 0.0001', () => {
+      expect(amountValidation(0.0001)).toBe(true)
+      expect(amountValidation(100)).toBe(true)
+      expect(amountValidation(999999.99)).toBe(true)
+      expect(amountValidation(0.0005)).toBe(true)
     })
 
     it('should return an error message for amount exceeding 999999.99', () => {

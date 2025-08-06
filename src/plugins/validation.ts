@@ -20,38 +20,40 @@ export const decimal = (value: any): boolean | string => {
   return true;
 };
 
-export const amountValidation = (value: any, context?: { isInitialBalance?: boolean }): boolean | string => {
-  if (value === undefined || value === null || value === '') return true;
+  export const amountValidation = (value: any, context?: { isInitialBalance?: boolean }): boolean | string => {
+    if (value === undefined || value === null || value === '') return true;
 
-  const stringValue = String(value);
+    const stringValue = String(value);
 
-  if (!/^-?\d+(\.\d+)?$/.test(stringValue)) {
-    return 'You can add only numbers';
-  }
+    if (!/^-?\d+(\.\d+)?$/.test(stringValue)) {
+      return 'You can add only numbers';
+    }
 
-  const num = parseFloat(stringValue);
+    const num = parseFloat(stringValue);
 
-  if (isNaN(num)) {
-    return 'You can add only numbers';
-  }
+    if (isNaN(num)) {
+      return 'You can add only numbers';
+    }
 
-  if (num < 0) {
-    return 'Use only positive numbers';
-  }
+    if (num < 0) {
+      return 'Use only positive numbers';
+    }
 
-  const parts = stringValue.split('.');
-  if (parts.length === 2 && parts[1].length > 4) {
-    return 'Must be a valid decimal (up to 4 digits)';
-  }
+    if (!context?.isInitialBalance && num < 0.0001) { 
+      return 'Amount must be at least $0.0001'; 
+    }
+    
+    const parts = stringValue.split('.');
+    if (parts.length === 2 && parts[1].length > 4) {
+      return 'Must be a valid decimal (up to 4 digits)';
+    }
 
-  if (!context?.isInitialBalance && num < 0.0001) { 
-    return 'Amount must be at least $0.0001'; 
-  }
-  if (num > 999999.99) {
-    return 'Amount cannot exceed $999,999.99';
-  }
-  return true;
-};
+ 
+    if (num > 999999.99) {
+      return 'Amount cannot exceed $999,999.99';
+    }
+    return true;
+  };
 
 defineRule('required', required);
 defineRule('min', min);

@@ -6,6 +6,8 @@ A simple web application for managing personal wallet transactions, built with V
 
 You can access the live application here: [https://wallet-system-theta.vercel.app/](https://wallet-system-theta.vercel.app/)
 
+Note: Backend service is hosted on a free hosting service, so it may take 1–2 minutes to load the first time.
+
 ## Technologies Used
 
 *   **Vue 3**: A progressive JavaScript framework for building user interfaces.
