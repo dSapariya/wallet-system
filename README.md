@@ -6,6 +6,8 @@ A simple web application for managing personal wallet transactions, built with V
 
 You can access the live application here: [https://wallet-system-theta.vercel.app/](https://wallet-system-theta.vercel.app/)
 
+You can watch a walkthrough of the project here : [https://www.loom.com/share/9b1ec2aa7bab45ddbb333cc45f5176d2?sid=99889032-b8b7-4826-9a8e-6c70308789ee](https://www.loom.com/share/9b1ec2aa7bab45ddbb333cc45f5176d2?sid=99889032-b8b7-4826-9a8e-6c70308789ee)
+
 Note: Backend service is hosted on a free hosting service, so it may take 1–2 minutes to load the first time.
 
 ## Technologies Used
